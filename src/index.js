@@ -1,12 +1,13 @@
 import dns from 'dns'; // Set DNS servers to Google's public DNS servers
 dns.setServers(['8.8.8.8', '8.8.4.4']); // add this line to set the DNS servers to Google's public DNS servers
 import dotenv from 'dotenv';
-import connectDB from './db/dbconnect.js';
-import app from './app.js';
 
 dotenv.config({
     path: './.env'
 });
+
+import app from './app.js';
+import connectDB from './db/dbconnect.js';
 
 connectDB()
 .then(() => {

@@ -16,7 +16,7 @@ const registerUser = asyncHandler(async (req, res) => {
     // send response with user data and success message 
 
     const { username, email, password, fullName } = req.body;
-    console.log('User data:', { username, email, password, fullName });
+    // console.log("Request body:", req.body);
     
     // .some() method checks if at least one element in the array passes the test implemented by the provided function. In this case, it checks if any of the fields are empty strings after trimming whitespace.
     if ([username, email, password, fullName].some((field) => field?.trim() === "")) {
@@ -30,9 +30,12 @@ const registerUser = asyncHandler(async (req, res) => {
     }
     
     // Check if avatar file is provided in the request. If not, throw an error indicating that the avatar file is required.
-    const avatarLocalPath = req.files?.avatar?.[0]?.path;
+    const avatarLocalPath = req.files?.avatar?.[0]?.path; // take the path of the uploaded avatar file from the request object. The optional chaining operator (?.) is used to safely access nested properties without throwing an error if any part of the chain is undefined or null.
+
     // Check if cover image file is provided in the request. If not, it will be handled later when creating the user.
-    const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
+    const coverImageLocalPath = req.files?.coverImage?.[0]?.path; // take the path of the uploaded cover image file from the request object. The optional chaining operator (?.) is used to safely access nested properties without throwing an error if any part of the chain is undefined or null.
+
+    // console.log(req.files);
 
     if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar file is required");
