@@ -37,6 +37,12 @@ const registerUser = asyncHandler(async (req, res) => {
 
     // console.log(req.files);
 
+    // let coverImageLocalPath;
+    // if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+    //     coverImageLocalPath = req.files.coverImage[0].path
+    // }
+    
+
     if (!avatarLocalPath) {
         throw new ApiError(400, "Avatar file is required");
     }
@@ -67,16 +73,7 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 
     res.status(201).json(new ApiResponse(200, "User registered successfully", {
-        user: {
-            id: newUser._id,    
-        username: newUser.username, 
-        email: newUser.email,
-        fullName: newUser.fullName,
-        avatar: newUser.avatar,
-        coverImage: newUser.coverImage,
-        createdAt: newUser.createdAt,
-        updatedAt: newUser.updatedAt,
-        }
+        createdUser
     }));
 
     });
