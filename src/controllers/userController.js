@@ -10,6 +10,11 @@ const generateAccessAndRefreshTokens = async(userId) =>{
         const accessToken = user.generateAccessToken()
         const refreshToken = user.generateRefreshToken()
 
+        user.refreshToken = refreshToken
+        await user.save({ validateBeforeSave: false })
+
+        return { accessToken, refreshToken }
+
         
     } catch (error) {
         throw new ApiError(500, "Something went wrong while generating the refresh and access token!");
@@ -117,6 +122,36 @@ const loginUser = asyncHandler(async (req, res) => {
     if(!isPasswordValid) {
         throw new ApiError(401, "Invalid User Credentials!");        
     }
+
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id)
+
+    const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
+
+    const options = {
+        httpOnly: true,
+        secure: true,
+    };
+
+    // industry standard 
+    // const isProduction = process.env.NODE_ENV === "production";
+
+    // const cookieOptions = {
+    // httpOnly: true,
+    // secure: isProduction, // ensures that the cookie is only sent over HTTPS in production
+    // sameSite: isProduction ? "none" : "lax", // allows the cookie to be sent in cross-site requests in production, but restricts it to same-site requests in development
+    // };
+
+    return res.status(200).cookie("accessToken", accessToken, options).cookie("refreshToken", refreshToken, options).json(
+        new ApiResponse(
+            200,
+            "User logged in successfully",
+            {
+                user: loggedInUser,
+                accessToken,
+                refreshToken
+            }
+        )
+    );
 
 })    
  
